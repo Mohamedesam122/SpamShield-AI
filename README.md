@@ -6,6 +6,13 @@ The application can classify SMS or email messages as Spam or Ham in real time u
 
 ---
 
+<img width="1879" height="915" alt="image" src="https://github.com/user-attachments/assets/fe4b258e-ec4f-43a0-a045-99d09382acb6" />
+<img width="1400" height="748" alt="image" src="https://github.com/user-attachments/assets/ba2e9ac1-dad0-49d0-b341-70855751042c" />
+<img width="1857" height="657" alt="image" src="https://github.com/user-attachments/assets/6c6e586d-c95c-4edd-be93-fcf2c983ebb7" />
+
+
+
+
 ## Features
 
 - Spam / Ham message classification
