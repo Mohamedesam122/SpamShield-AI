@@ -1,10 +1,4 @@
-"""
-Spam Detector — Streamlit Application
-======================================
-Multinomial Naive Bayes · scikit-learn · Plotly · Streamlit
-Supports English / Arabic · Dark / Light themes
-Persistent history (session + CSV export)
-"""
+
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -23,9 +17,6 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-# ──────────────────────────────────────────────────────────────────────────────
-# PAGE CONFIG  (must be the very first Streamlit call)
-# ──────────────────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Spam Detector",
     page_icon="🛡️",
@@ -33,9 +24,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ──────────────────────────────────────────────────────────────────────────────
-# TRANSLATIONS
-# ──────────────────────────────────────────────────────────────────────────────
 TEXTS = {
     "EN": {
         "page_title":       "Spam Detector",
@@ -168,9 +156,6 @@ SAMPLE_HAM = (
     "need the Zoom link again."
 )
 
-# ──────────────────────────────────────────────────────────────────────────────
-# SESSION STATE INIT
-# ──────────────────────────────────────────────────────────────────────────────
 for _k, _v in [("lang", "EN"), ("theme", "dark"), ("history", []), ("prefill", "")]:
     if _k not in st.session_state:
         st.session_state[_k] = _v
@@ -181,9 +166,7 @@ rtl  = st.session_state.lang  == "AR"
 DIR  = "rtl" if rtl else "ltr"
 TALIGN = "right" if rtl else "left"
 
-# ──────────────────────────────────────────────────────────────────────────────
-# THEME PALETTE
-# ──────────────────────────────────────────────────────────────────────────────
+
 if dark:
     BG          = "linear-gradient(135deg,#0f0c29,#302b63,#24243e)"
     CARD_BG     = "rgba(255,255,255,0.05)"
@@ -248,9 +231,6 @@ else:
 PREV_BDL = f"border-{'right' if rtl else 'left'}:3px solid #8b5cf6;"
 PREV_RAD = f"border-radius:{'10px 0 0 10px' if rtl else '0 10px 10px 0'};"
 
-# ──────────────────────────────────────────────────────────────────────────────
-# CSS
-# ──────────────────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap');
@@ -498,9 +478,6 @@ with st.spinner("Loading model…"):
     model, vectorizer, model_acc, model_prec, model_rec, model_f1, ds, cm, len_stats = load_model()
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# HELPER: consistent Plotly layout
-# ──────────────────────────────────────────────────────────────────────────────
 def _base_layout(**kwargs):
     return dict(
         paper_bgcolor=PLT_PAPER,
@@ -509,11 +486,6 @@ def _base_layout(**kwargs):
         margin=dict(t=32, b=10, l=10, r=10),
         **kwargs,
     )
-
-
-# ──────────────────────────────────────────────────────────────────────────────
-# GLOBAL HEADER  (title + language + theme toggles)
-# ──────────────────────────────────────────────────────────────────────────────
 c_title, _, c_lang, c_theme = st.columns([5, 2, 1, 1])
 
 with c_title:
@@ -552,10 +524,6 @@ tab_cls, tab_hist, tab_dash = st.tabs(
     [T["tab_classify"], T["tab_history"], T["tab_dashboard"]]
 )
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# TAB 1 — CLASSIFIER
-# ══════════════════════════════════════════════════════════════════════════════
 with tab_cls:
     _, cmain, _ = st.columns([1, 3, 1])
     with cmain:
@@ -606,7 +574,6 @@ with tab_cls:
             )
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # ── Sample buttons ────────────────────────────────────────────────────
         st.markdown(f'<div class="section-label" style="margin-bottom:0.35rem;">{T["sample_title"]}</div>', unsafe_allow_html=True)
         sb1, sb2 = st.columns(2)
         with sb1:
@@ -618,7 +585,6 @@ with tab_cls:
                 st.session_state.prefill = SAMPLE_HAM
                 st.rerun()
 
-        # ── Input card ────────────────────────────────────────────────────────
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown(f'<div class="section-label">{T["classify_sec"]}</div>', unsafe_allow_html=True)
 
@@ -871,7 +837,6 @@ with tab_dash:
     st.plotly_chart(len_fig, use_container_width=True, config={"displayModeBar": False})
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # ── Live session analytics (requires history) ─────────────────────────────
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
     if not history:
@@ -908,7 +873,6 @@ with tab_dash:
         df_h = pd.DataFrame(history)
         df_h["ts"] = pd.to_datetime(df_h["timestamp"])
 
-        # ── Row 1: donut + confidence bar ────────────────────────────────────
         ch_pie, ch_bar = st.columns([1, 2])
 
         with ch_pie:
@@ -955,7 +919,6 @@ with tab_dash:
             )
             st.plotly_chart(bar_fig, use_container_width=True, config={"displayModeBar": False})
 
-        # ── Row 2: timeline + confidence histogram ───────────────────────────
         ch_trend, ch_hist = st.columns(2)
 
         with ch_trend:
@@ -1010,7 +973,4 @@ with tab_dash:
             st.plotly_chart(conf_hist, use_container_width=True, config={"displayModeBar": False})
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# FOOTER
-# ──────────────────────────────────────────────────────────────────────────────
 st.markdown(f'<div class="page-footer">{T["footer"]}</div>', unsafe_allow_html=True)
